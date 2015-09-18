@@ -1,25 +1,54 @@
-<h4> Hi <%= session[:player_name]%> !</h4>
+<h2> BlackJack!<h2>
+  <h3>You have $<%= session[:player_money] %></h3>
+  <h3>Your current bet is $<%= session[:player_bet] %></h4>
+<h4> Hi <%= session[:player_name]%>, welcome to blackjack!</h4>
 
-<h5> Your cards are: </h5>
-<ul>
-  <% session[:player_cards].each do |card| %>
-  <li><%= card.to_s %> </li>
+<% if @show_play_again_button %>
+<p>
+  <strong>Play again?</strong>
+  <a href="/set_bet" class= "btn btn-primary">Yes</a>
+  <a href='/game_over' class= "btn"> No</a>
+</p>
+<% end %>
 
-  <% end %>
-</ul>
-Your total is <%= calculate_total(session[:player_cards]) %>
-
-<h5> Dealer cards are: </h5>
-<ul>
-  <% session[:dealer_cards].each do |card| %>
-  <li><%= card.to_s %> </li>
-
-  <% end %>
-</ul>
-
-Dealers total is <%= calculate_total(session[:dealer_cards]) %>
-
-<div class="progress progress-striped active">
-  <div class="bar" style="width: 100%;"></div>
+<div class="well">
+<h4>Dealer cards are:</h4>
+  <% session[:dealer_cards].each_with_index do |card, i| %>
+  <% if session[:turn] != "dealer" && i == 0%>
+    <img src="/images/cards/cover.jpg">
+  <% else %>
+     <%= card_image(card) %>
+      <% end %>
+<% end %>
 </div>
-  
+
+<% if @show_dealer_hit_button %>
+  <p>
+  <h5>Dealers has <%= calculate_total(session[:dealer_cards]) %> and will hit.</h5>
+  <form action="/game/dealer/hit" method='post'>
+      <input type="submit" class='btn btn-primary' value="Click to see Dealers card &rarr;"/>
+    </form>
+  <% end %>
+</p>
+
+<div class="well">
+<h4> Your cards are: </h4>
+  <% session[:player_cards].each do |card| %>
+  <%= card_image(card) %>
+<% end %>
+</div>
+
+<p>
+  <%= session[:player_name]%> has <%= calculate_total(session[:player_cards]) %>
+  <br/>
+What would you like to do?
+
+<% if @show_hit_or_stay_buttons %>
+<form id= "hit_form" action="/game/player/hit" method='post'>
+  <input type="submit" class='btn btn-success' value="Hit"/>
+</form>
+<form id= "stay_form" action="/game/player/stay" method='post'>
+  <input type="submit" class='btn btn-warning' value="Stay"/>
+</form>
+<% end %>
+</p>
