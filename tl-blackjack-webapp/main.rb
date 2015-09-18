@@ -61,6 +61,10 @@ helpers do
     session[:player_money] = session[:player_money] - session[:player_bet]
     @error = "You lost $#{session[:player_bet]} You now have $#{session[:player_money]}"
     @error = "<strong>#{session[:player_name]} loses $#{session[:player_bet]}</strong> #{msg}"
+    
+    if session[:player_money] == 0
+      @error = "It seems you have run out of money, you can start over if you want."
+    end
   end
 
   def tie!(msg)
@@ -109,7 +113,7 @@ post '/set_bet' do
     halt erb :set_bet
   elsif params[:player_bet].to_i > session[:player_money]
     @error = "You can't bet more than what you have. You only have #{session[:player_money]}."
-    halt erb :set_bet     
+    halt erb :set_bet
   end
   session[:player_bet] = params[:player_bet].to_i
   redirect '/game'
