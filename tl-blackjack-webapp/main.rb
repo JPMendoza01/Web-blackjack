@@ -109,9 +109,7 @@ post '/set_bet' do
     halt erb :set_bet
   elsif params[:player_bet].to_i > session[:player_money]
     @error = "You can't bet more than what you have. You only have #{session[:player_money]}."
-    halt erb :set_bet
-  elsif session[:player_money] == 0
-    halt redirect '/game_over'      
+    halt erb :set_bet     
   end
   session[:player_bet] = params[:player_bet].to_i
   redirect '/game'
